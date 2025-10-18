@@ -1,0 +1,40 @@
+// const express = require("express");
+// const path = require("path");
+// const multer = require("multer");
+// const fs = require("fs");
+
+// // check agar mera folder nahi toh bane de bencho ikspo//
+
+
+// const filecheck = path.join(__dirname,"../middleware/files");
+// if(!fs.existsSync(filecheck)){
+//     fs.mkdirSync(filecheck); // Creates folder if missing
+// }
+
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         cb(null, filecheck);
+//     },
+//     filename: function (req, file, cb) {
+//         cb(null, `${Date.now()}-${file.originalname}`);
+//     }
+// });
+
+// const upload = multer({ storage });
+// module.exports = upload;
+
+// // middleware/multerBuffer.js
+// // const multer = require("multer") 
+
+// // const storage = multer.memoryStorage(); // no file saved to disk
+// // const upload = multer({ storage });
+
+// // module.exports = upload;
+// middleware/multerBuffer.js
+const multer = require("multer");
+
+// Use memory storage so files are in buffer, not on disk
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+module.exports = upload;
