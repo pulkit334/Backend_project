@@ -1,9 +1,4 @@
 # Personal explicit files you don't want uploaded
-html.html
-razer.js
-testRateLimiter.js
-i.js
-extra.txt
 
 # Common folders / files to ignore
 node_modules/
@@ -12,10 +7,4 @@ node_modules/
 *.log
 
 # Optional extras that are usually useful
-.DS_Store
-.vscode/
-dist/
-build/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+

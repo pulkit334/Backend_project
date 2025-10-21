@@ -1,0 +1,90 @@
+    // const ext = path.extname(req.file.originalname);
+    // const file64 = parser.format(ext, req.file.buffer).content;
+
+    // const result = await cloudinary.uploader.upload(file64, {
+    //   folder: "files",
+    // });
+// // module.exports = routerr;
+// const express = require("express");
+// const cloudinary = require("cloudinary").v2;
+// const upload = require("../middleware/multerBuffer");
+// const router = express.Router();
+// require("dotenv").config();
+
+// cloudinary.config({
+//   cloud_name: process.env.CLOUD_NAME,
+//   api_key: process.env.API_KEY,
+//   api_secret: process.env.API_SECRET,
+// });
+
+// // single file buffer upload
+// router.post("/upload", upload.single("file"), async (req, res) => {
+//   try {
+//     if (!req.file) return res.status(400).send("No file uploaded");
+
+//     // Buffer → Base64
+//     const base64Data = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+
+//     const result = await cloudinary.uploader.upload(base64Data, {
+//       folder: "files",
+//     });
+
+//     res.json({
+//       message: "File uploaded to Cloudinary successfully!",
+//       url: result.secure_url,
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send("Cloudinary upload failed");
+//   }
+// });
+
+
+
+working 
+
+rout.put(
+  "/updateprofile",
+  userverify,
+  upload.single("file"),
+  async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).send("No file uploaded");
+      }
+      console.time("updateProfile");
+
+      console.log("user are ", req.users);
+      console.log(req.file);
+
+      const user = await User.findById(req.users._id);
+      if (!user) {
+        console.timeEnd("updateProfile");
+        return res.status(404).send("User not found");
+      }
+
+      const file = getdatauri(req.file);
+      if (user.profilepic?.public_id) {
+        await cloudinary.uploader.destroy(user.profilepic.public_id);
+      }
+      //upload new image to cloudnary
+
+      const cdb = await cloudinary.uploader.upload(file.content);
+      user.profilepic = {
+        public_id: cdb.public_id,
+        url: cdb.secure_url,
+      };
+      if (cdb) console.log("succefully upladoed the imaegs");
+      //save function
+      await user.save();
+
+      // how much timetaken by the user to update/
+      
+      console.timeEnd("updateProfile");
+      res.status(404).send("the user hasd succfuly updated the profile pic ");
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Cloudinary upload failed");
+    }
+  }
+);

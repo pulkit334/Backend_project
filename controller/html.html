@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Update with Manual JWT Cookie</title>
+</head>
+<body>
+  <h2>Set JWT Token (Cookie)</h2>
+  <p>Paste your JWT token below to set it as a cookie for backend authentication:</p>
+  <input type="text" id="tokenInput" style="width:500px;" placeholder="Paste JWT here">
+  <button onclick="setToken()">Save Token</button>
+
+  <hr>
+
+  <h2>Update Order Status</h2>
+  <label for="orderId">Order ID:</label>
+  <input type="text" id="orderId" placeholder="Enter Order ID"><br><br>
+
+  <label for="orderStatus">Order Status:</label>
+  <input type="text" id="orderStatus" placeholder="Enter new status"><br><br>
+
+  <button onclick="updateOrder()">Update Order</button>
+
+  <h3>Response:</h3>
+  <pre id="response"></pre>
+
+  <script>
+    // Save the token as a cookie
+    function setToken() {
+      const token = document.getElementById('tokenInput').value.trim();
+      if (!token) {
+        alert("Please enter a valid token!");
+        return;
+      }
+      // set cookie for all paths
+      document.cookie = `token=${token}; path=/`;
+      alert("Token saved as cookie!");
+    }
+
+    // Update order with cookie authentication
+    async function updateOrder() {
+      const orderId = document.getElementById('orderId').value.trim();
+      const orderStatus = document.getElementById('orderStatus').value.trim();
+
+      if (!orderId || !orderStatus) {
+        alert("Please enter both Order ID and Status!");
+        return;
+      }
+
+      try {
+        const res = await fetch(`http://localhost:5000/od/admin/order/${orderId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include', // important: send cookies
+          body: JSON.stringify({ OrderStatus: orderStatus })
+        });
+
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } 
+        catch { data = { message: text }; }
+
+        document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+
+      } catch (err) {
+        document.getElementById('response').textContent = 'Error: ' + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
